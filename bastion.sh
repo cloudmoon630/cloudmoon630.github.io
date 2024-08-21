@@ -13,7 +13,7 @@ esac
 
 
 configure_al2023 () {
-    $SUDO yum install -y docker mariadb105 postgresql15
+    $SUDO yum install -y docker mariadb105 postgresql15 libxcrypt-compat
     python3 -m ensurepip
 }
 
@@ -26,7 +26,7 @@ configure_al2 () {
 
 install_tools () {
     # Git, jq, npm, amazon cloudwatch agent
-    $SUDO yum install -y git jq amazon-cloudwatch-agent
+    $SUDO yum install -y git jq amazon-cloudwatch-agent amazon-efs-utils
 
     cat << 'EOF' > /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.d/config.json
 {
