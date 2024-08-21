@@ -231,7 +231,7 @@ _daemonize () {
 
     sudo mkdir -p /var/log/app
     sudo touch /var/log/app/app.log
-    sudo touch /var/log/app/app.error
+    sudo touch /var/log/app/error.log
 
     echo "===== /etc/systemd/system/app.service ====="
     echo
