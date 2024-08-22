@@ -113,14 +113,10 @@ install_k8s_tools () {
     curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/$ARCH/kubectl"
     $SUDO install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
     rm kubectl
-    echo 'source <(kubectl completion bash)' >> ~/.bashrc
-    source <(kubectl completion bash)
     
     # Download eksctl
     curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_Linux_$ARCH.tar.gz" | tar xz -C /tmp
     $SUDO mv /tmp/eksctl /usr/local/bin
-    echo 'source <(eksctl completion bash)' >> ~/.bashrc
-    source <(eksctl completion bash)
 
     # Download helm
     curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
@@ -132,6 +128,9 @@ install_k8s_tools () {
     # Configure EKS variables on shell login
     cat << EOF | $SUDO tee /etc/profile.d/kubevar.sh > /dev/null
 #!/bin/bash -eux
+
+source <(kubectl completion bash)
+source <(eksctl completion bash)
 
 case \$(uname -m) in
     x86_64) export ARCH="amd64" ;;
