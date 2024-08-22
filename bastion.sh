@@ -173,7 +173,20 @@ Commands list:
     logs        <recent|status|long|sync> PATH
     proxy       UPSTREAM_ENDPOINT
     daemonize   COMMAND
+    eks_access
 1EOF
+}
+
+eks_access () {
+    ROLE_ARN=\$(aws sts get-caller-identity --query Arn --output text | cut -d '/' -f1,2 | sed 's/assumed-//' | sed 's/:sts:/:iam:/')
+    echo \$ROLE_ARN
+
+    if ! aws eks list-access-entries --cluster-name \$CLUSTER --query accessEntries | jq -e '. [] | select(. == "'\$ROLE_ARN'")' > /dev/null; then
+        aws eks create-access-entry --cluster-name \$CLUSTER --principal-arn \$ROLE_ARN --no-cli-pager
+        aws eks associate-access-policy --cluster-name \$CLUSTER --principal-arn \$ROLE_ARN --access-scope type=cluster --policy-arn arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy --no-cli-pager
+    fi
+
+    aws eks update-kubeconfig --name \$CLUSTER
 }
 
 proxy () {
